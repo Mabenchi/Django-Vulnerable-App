@@ -6,11 +6,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'register/form.css' %}">
 </head>
 <body>
-    {% if error_message %}
-            <p class="error">{{ error_message }}</p>
-    {% endif %}
     <form method="post">
         <h1>Register</h1>
+        {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+        {% endif %}
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username"><br><br>
 
