@@ -1,0 +1,59 @@
+/* Global Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f0f0f0;
+}
+
+/* Navigation Header Styles */
+.navigation {
+    background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+    color: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+}
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+.nav-btn {
+    text-decoration: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+.nav-btn:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+.nav-btn-primary {
+    background-color: #ff6f61;
+}
+.nav-btn-primary:hover {
+    background-color: #ff5544;
+}
+
+/* Adjusted body padding to account for fixed header */
+.page-content {
+    padding-top: 80px;
+}

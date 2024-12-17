@@ -1,120 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Members</title>
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <title>Search Members | Clicker</title>
     <style>
-        .error {
-            color: red;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+        .body {
+            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: #f0f0f0;
+            line-height: 1.6;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
-
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        form {
-            margin-bottom: 30px;
             text-align: center;
+            color: #4e54c8;
+            margin-bottom: 30px;
         }
-
-        input[type="text"] {
+        form {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        input {
+            flex-grow: 1;
             padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
             margin-right: 10px;
-            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
         }
-
+        input:focus {
+            outline: none;
+            border-color: #4e54c8;
+            box-shadow: 0 0 5px rgba(78, 84, 200, 0.5);
+        }
         button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #ff6f61;
             color: white;
-            font-size: 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
-
         button:hover {
-            background-color: #45a049;
+            background-color: #ff5544;
         }
-
+        .error {
+            color: #ff6f61;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
         table {
-            width: 80%;
+            width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #4CAF50;
+        thead {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
             color: white;
         }
-
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #f9f9f9;
         }
-
-        tr:hover {
-            background-color: #ddd;
+        .tr-content:hover {
+            background-color: #f1f1f1;
         }
-
         .no-results {
             text-align: center;
-            color: #999;
-            font-style: italic;
+            color: #666;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Search for a Member by Username</h1>
-    <form method="GET">
-        <input type="text" name="username" placeholder="Enter username" />
-        <button type="submit">Search</button>
-    </form>
-    {% if error_message %}
-    <p class="error">{{ error_message }}</p>
-    {% endif %}
-    {% if members %}
-        <h2>Search Results</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Date Joined</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for member in members %}
-                    <tr>
-                        <td>{{ member.0 }}</td>  <!-- Username -->
-                        <td>{{ member.1 }}</td>  <!-- Email -->
-                        <td>{{ member.2 }}</td>  <!-- Date Joined -->
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="no-results">No members found.</div>
-    {% endif %}
+    <nav class="navigation">
+        <div class="nav-container">
+            <a href="/" class="logo">Clicker</a>
+            <div class="nav-buttons">
+                <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
+                <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
+                <a href="{% url 'login' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+            </div>
+        </div>
+    </nav>
+    <div class="body">
+        <div class="container">
+            <h1>Search for a Member</h1>
+            
+            <form method="GET">
+                <input type="text" name="username" placeholder="Enter username" required />
+                <button type="submit">Search</button>
+            </form>
+
+            {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+            {% endif %}
+
+            {% if members %}
+                <h2>Search Results</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr class="tr-content">
+                                <td>{{ member.0 }}</td>
+                                <td>{{ member.1 }}</td>
+                                <td>{{ member.2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% elif not error_message %}
+                <div class="no-results">No members found.</div>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
