@@ -20,4 +20,5 @@ from app import views
 
 urlpatterns = [
     path('members/', views.members, name='members'),
+    path('', views.home_page, name='home'),
 ]

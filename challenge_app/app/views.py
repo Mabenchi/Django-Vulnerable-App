@@ -21,3 +21,7 @@ def members(request):
             return HttpResponse(f"Error: {e}")
     template = loader.get_template('register.html')
     return HttpResponse(template.render())
+
+def home_page(request):
+    template = loader.get_template('home.html')
+    return HttpResponse(template.render())
