@@ -1,61 +1,79 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'global.css' %}">
-    <title>Register for Clicker</title>
+    <title>User Profile</title>
     <style>
         .body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 40px;
             background-color: #f0f0f0;
+            line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        form {
+
+        .container {
+            width: 100%;
+            max-width: 450px;
             background-color: white;
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
         }
+
         h1 {
             text-align: center;
             color: #4e54c8;
             margin-bottom: 30px;
         }
-        .error {
-            color: #ff6f61;
+
+        .amount {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
             text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
             color: #333;
         }
+
+        .amount strong {
+            color: #4e54c8;
+            font-size: 1.2em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #4e54c8;
+            font-weight: bold;
+        }
+
         input {
-            width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-sizing: border-box;
+            font-size: 16px;
         }
+
         input:focus {
             outline: none;
             border-color: #4e54c8;
             box-shadow: 0 0 5px rgba(78, 84, 200, 0.5);
         }
+
         button {
-            width: 100%;
-            padding: 15px;
+            padding: 10px 20px;
             background-color: #ff6f61;
             color: white;
             border: none;
@@ -63,7 +81,9 @@
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
+            align-self: center;
         }
+
         button:hover {
             background-color: #ff5544;
         }
@@ -86,26 +106,20 @@
             </div>
         </div>
     </nav>
-   
     <div class="body">
-        <form method="post">
-            <h1>Register for Clicker</h1>
-            
-            {% if error_message %}
-            <p class="error">{{ error_message }}</p>
-            {% endif %}
-            
+    <div class="container">
+        <h1>Your Profile</h1>
+        <p class="amount">Your current amount: <strong>{{ amount }}</strong></p>
+        <form method="POST">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
             
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
             
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            
-            <button type="submit">Create Your Account</button>
+            <button type="submit">Update Profile</button>
         </form>
     </div>
+</div>
 </body>
 </html>

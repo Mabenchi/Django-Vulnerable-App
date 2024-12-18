@@ -1,39 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Increment Amount</title>
+    <title>Current Amount</title>
+    <link rel="stylesheet" href="{% static 'global.css' %}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+        .body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f0f0f0;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #4e54c8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 2rem;
+            color: #4e54c8;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+        }
+
         button {
             padding: 10px 20px;
-            font-size: 16px;
+            background-color: #ff6f61;
             color: white;
-            background-color: #4CAF50;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #45a049;
-        }
-        p {
-            font-size: 20px;
+            background-color: #ff5544;
         }
     </style>
 </head>
 <body>
-    <h1>Your Current Amount</h1>
-    <p>{{ amount }}</p>
-
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">Increment Amount</button>
-    </form>
+    <nav class="navigation">
+        <div class="nav-container">
+            <a href="/" class="logo">Clicker</a>
+            <div class="nav-buttons">
+                {% if not logged_in %}
+                    <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                    <a href="{% url 'login' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                {%else%}
+                <a href="{% url 'profile' %}" class="nav-btn">Profile</a>
+                <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
+                <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
+                    <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="body">
+    <div class="container">
+        <h1>Your Current Amount</h1>
+        <p>{{ amount }}</p>
+        <form method="POST">
+            <button type="submit">Increment Amount</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

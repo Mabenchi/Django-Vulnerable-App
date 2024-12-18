@@ -6,13 +6,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .models import Amount
 
 # Create your views here.
-
+@login_required
 def search_members(request):
     if request.method == "GET":
         username = request.GET.get("username")
@@ -28,9 +29,9 @@ def search_members(request):
             template = loader.get_template('search_members.html')
             return HttpResponse(template.render({'error_message': e}))
         # Display results
-        return render(request, 'search_members.html', {'members': members})
+        return render(request, 'search_members.html', {'members': members,'logged_in': request.user.is_authenticated})
 
-    return render(request, 'search_members.html')
+    return render(request, 'search_members.html', { 'logged_in': request.user.is_authenticated})
 
 def user_login(request):
     if request.method == 'POST':
@@ -42,20 +43,22 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('change_password')
+                return redirect('earn')
             else:
-                return render(request, 'login.html', {'form': form, 'error_message': 'Invalid username or password'})
+                return render(request, 'login.html', {'form': form, 'error_message': 'Invalid username or password', 'logged_in': request.user.is_authenticated})
         else:
-            return render(request, 'login.html', {'form': form})
+            return render(request, 'login.html', {'form': form, 'logged_in': request.user.is_authenticated})
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'logged_in': request.user.is_authenticated})
 
 def logout_user(request):
     logout(request)
     return redirect('login') 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('login')
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -68,9 +71,9 @@ def register(request):
             return list_members(request)
         except Exception as e:
             template = loader.get_template('register.html')
-            return HttpResponse(template.render({'error_message': e}))
+            return HttpResponse(template.render({'error_message': e, 'logged_in': request.user.is_authenticated}))
     template = loader.get_template('register.html')
-    return HttpResponse(template.render())
+    return HttpResponse(template.render({ 'logged_in': request.user.is_authenticated}))
 
 @login_required
 def change_password(request):
@@ -87,7 +90,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(user=request.user)
 
-    return render(request, 'change_password.html', {'form': form})
+    return render(request, 'change_password.html', {'form': form, 'logged_in': request.user.is_authenticated})
 
 @login_required
 def increment_amount(request):
@@ -100,16 +103,33 @@ def increment_amount(request):
         amount_record.save()
         return redirect("earn")  # Reload the page after updating
 
-    return render(request, "increment_amount.html", {"amount": amount_record.amount})
+    return render(request, "increment_amount.html", {"amount": amount_record.amount, 'logged_in': request.user.is_authenticated})
 
+@login_required
+def profile_view(request):
+    # Get the user's amount record
+    amount_record, created = Amount.objects.get_or_create(user=request.user, defaults={"amount": 0.00})
+    
+    if request.method == "POST":
+        # Update profile information
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        
+        # Update user information
+        user = request.user
+        user.username = username
+        user.email = email
+        user.save()
+
+        return redirect("profile")  # Redirect to the same page after updating
+
+    return render(request, "profile.html", {"user": request.user, "amount": amount_record.amount, 'logged_in': request.user.is_authenticated})
+
+@login_required
 def list_members(request):
     # Query all users XSS
     members = User.objects.all()
-    return render(request, 'list_members.html', {'members': members})
-
-def home_page(request):
-    template = loader.get_template('home.html')
-    return HttpResponse(template.render())
+    return render(request, 'list_members.html', {'members': members, 'logged_in': request.user.is_authenticated})
 
 def landing_page(request):
     """
@@ -129,6 +149,51 @@ def landing_page(request):
             'Start clicking the main button',
             'Earn money for each click',
             'Cash out your earnings'
-        ]
+        ],
+        'logged_in': request.user.is_authenticated
     }
     return render(request, 'landing.html', context)
+
+@login_required
+@csrf_exempt
+def send_amount(request):
+    if request.method == "POST":
+        sender = request.user
+        receiver_username = request.POST.get("receiver_username")
+        amount_to_send = request.POST.get("amount")
+
+        try:
+            # Validate input
+            if not receiver_username or not amount_to_send:
+                raise ValueError("Invalid data provided.")
+            amount_to_send = int(amount_to_send)
+            if amount_to_send <= 0:
+                raise ValueError("Amount must be greater than zero.")
+
+            # Fetch sender and receiver Amount objects
+            sender_amount, _ = Amount.objects.get_or_create(user=sender)
+            receiver = User.objects.get(username=receiver_username)
+            receiver_amount, _ = Amount.objects.get_or_create(user=receiver)
+
+            # Ensure sender has sufficient balance
+            if sender_amount.amount < amount_to_send:
+                raise ValueError("Insufficient balance.")
+
+            # Perform the transfer
+            sender_amount.amount -= amount_to_send
+            receiver_amount.amount += amount_to_send
+            sender_amount.save()
+            receiver_amount.save()
+
+            return redirect("profile")  # Redirect to profile or another page after success
+        except User.DoesNotExist:
+            error_message = "Receiver does not exist."
+        except ValueError as e:
+            error_message = str(e)
+        except Exception as e:
+            error_message = str(e)
+
+        # Render the error back to the search page
+        return render(request, 'search_members.html', {"error_message": error_message}) 
+
+    return render(request, 'search_members.html')  # Redirect to the search page for non-POST requests

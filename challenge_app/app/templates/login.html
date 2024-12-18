@@ -64,7 +64,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - 60px);
             padding: 20px;
         }
         
@@ -131,23 +130,27 @@
     </style>
 </head>
 <body>
-    <div class="navigation">
+    <nav class="navigation">
         <div class="nav-container">
             <a href="/" class="logo">Clicker</a>
             <div class="nav-buttons">
-                <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                {% if not logged_in %}
+                    <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                    <a href="{% url 'login' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                {%else%}
+                <a href="{% url 'profile' %}" class="nav-btn">Profile</a>
                 <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
                 <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
-                <a href="{% url 'login' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                    <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                {% endif %}
             </div>
         </div>
-    </div>
+    </nav>
     
     <div class="page-content">
         <form method="POST">
-            {% csrf_token %}
             <h1>Login</h1>
-            
+            {% csrf_token %}
             {% if messages %}
                 <ul class="error">
                     {% for message in messages %}
