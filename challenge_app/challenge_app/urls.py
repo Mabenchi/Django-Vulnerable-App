@@ -25,6 +25,6 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('change_password/', views.change_password, name='change_password'),
-    # path('earn/', views.update_amount, name='earn'),
+    path("earn/", views.increment_amount, name="earn"),
     path('', views.landing_page, name='landing_page'),
 ]

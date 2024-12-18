@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from .models import Amount
 
 # Create your views here.
 
@@ -89,16 +90,17 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
 
 @login_required
-def update_amount(request):
-    profile = User.objects.get(user=request.user)
+def increment_amount(request):
+    # Get or create the Amount record for the logged-in user
+    amount_record, created = Amount.objects.get_or_create(user=request.user, defaults={"amount": 0})
     
-    if request.method == 'POST':
-        new_amount = request.POST.get('amount')
-        profile.amount = new_amount
-        profile.save()
-        return render(request, 'update_amount.html', {'profile': profile, 'success': True})
+    # Increment the amount if the request is a POST
+    if request.method == "POST":
+        amount_record.amount += 1  # Increment by 1
+        amount_record.save()
+        return redirect("earn")  # Reload the page after updating
 
-    return render(request, 'update_amount.html', {'profile': profile})
+    return render(request, "increment_amount.html", {"amount": amount_record.amount})
 
 def list_members(request):
     # Query all users XSS
