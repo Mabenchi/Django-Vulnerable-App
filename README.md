@@ -19,13 +19,17 @@ cd Django-Vulnerable-App
 Linux: python -m venv challenge
 Windows: py -m venv challenge
 
-#install Django
-Linux: python -m pip install Django
-Windows: py -m pip install Django
 
 # Activate the virtual environment
 Linux: source challenge/bin/activate
 Windows: challenge\Scripts\activate.bat
+
+#install Django
+Linux: python -m pip install Django
+Windows: py -m pip install Django
+
+#Enter to App Directory
+cd challenge_app
 
 # Apply migrations
 python3 manage.py migrate

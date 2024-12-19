@@ -65,7 +65,7 @@ def register(request):
         try:
             user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
-            return list_members(request)
+            return redirect ("login")
         except Exception as e:
             template = loader.get_template('register.html')
             return HttpResponse(template.render({'error_message': e, 'logged_in': request.user.is_authenticated}))
