@@ -112,14 +112,15 @@
                 <a href="{% url 'profile' %}" class="nav-btn">Profile</a>
                 <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
                 <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
-                    <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                <a href="{% url 'logout' %}" class="nav-btn nav-btn-danger">logout</a>
                 {% endif %}
             </div>
         </div>
     </nav>
     <div class="body">
         <div class="container">
-            <h1>Search for a Member</h1>
+            <h1>Share Your Earning With Friends</h1>
             
             <form method="GET">
                 <input class="username" type="text" name="username" placeholder="Enter username" required />

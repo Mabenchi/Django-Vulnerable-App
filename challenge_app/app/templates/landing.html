@@ -96,6 +96,7 @@
                 <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
                 <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
                     <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                    <a href="{% url 'logout' %}" class="nav-btn nav-btn-danger">logout</a>
                 {% endif %}
             </div>
         </div>
@@ -104,7 +105,11 @@
         <div class="container">
             <h1>{{ app_name }}</h1>
             <p>{{ tagline }}</p>
-            <a href="/register" class="cta-button">Start Clicking & Earning!</a>
+            {% if not logged_in %}
+                <a href="/register" class="cta-button">Start Clicking & Earning!</a>
+            {%else%}
+                <a href="/earn/" class="cta-button">Start Clicking & Earning!</a>
+            {% endif %}
         </div>
     </div>
 

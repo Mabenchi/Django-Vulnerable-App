@@ -33,7 +33,7 @@
             text-align: center;
         }
 
-        p {
+        #amount {
             font-size: 2rem;
             color: #4e54c8;
             background-color: #f9f9f9;
@@ -77,18 +77,39 @@
                 <a href="{% url 'list_members' %}" class="nav-btn">Members</a>
                 <a href="{% url 'search_members' %}" class="nav-btn">Search</a>
                     <a href="{% url 'earn' %}" class="nav-btn nav-btn-primary">Start Clicking</a>
+                    <a href="{% url 'logout' %}" class="nav-btn nav-btn-danger">logout</a>
                 {% endif %}
             </div>
         </div>
     </nav>
     <div class="body">
     <div class="container">
-        <h1>Your Current Amount</h1>
-        <p>{{ amount }}</p>
+        <h1>Click on Amount to Earn More</h1>
+        <button id="amount">{{amount}}</button>
         <form method="POST">
-            <button type="submit">Increment Amount</button>
+            <input id="amount_input" name="amount" type="hidden"/>
+            <button type="submit">Send Your Earning</button>
         </form>
     </div>
 </div>
 </body>
+<script>
+const amountButton = document.getElementById('amount');
+const amountInput = document.getElementById('amount_input');
+
+let amount = parseInt(amountButton.textContent, 10);
+
+amountButton.addEventListener('click', () => {
+    amount += 1;
+    todayEarn = parseInt(amountInput.value, 10);
+    if (!todayEarn)
+        todayEarn = 1
+    else 
+        todayEarn += 1
+    
+    amountButton.textContent = amount;
+    amountInput.value = todayEarn;
+
+});
+</script>
 </html>
