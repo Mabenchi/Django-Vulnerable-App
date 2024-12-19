@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middleware.CustomSessionMiddleware'
 ]
 
 ROOT_URLCONF = 'challenge_app.urls'
@@ -71,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'challenge_app.wsgi.application'
 
+SESSION_COOKIE_SAMESITE = None
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
