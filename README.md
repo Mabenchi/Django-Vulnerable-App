@@ -32,11 +32,11 @@ Windows: py -m pip install Django
 cd challenge_app
 
 # Apply migrations
-python3 manage.py migrate
-py manage.py migrate
+Linux: python3 manage.py migrate
+Windows: py manage.py migrate
 
 # Run the development server
-python3 manage.py runserver
-py manage.py runserver
+Linux: python3 manage.py runserver
+Windows: py manage.py runserver
 ```
 
